@@ -1,0 +1,96 @@
+= OpenLDAP Playground
+Álvaro López Medina <alopezme@redhat.com>
+v1.0, 2022-10
+// Create TOC wherever needed
+:toc: macro
+:sectanchors:
+// :source-highlighter: coderay
+// :source-highlighter: highlightjs
+:source-highlighter: pygments
+// Enable admonition icons
+:icons: font
+// :sectlinks:
+// Create the Table of contents here
+toc::[]
+:imagesdir: images
+
+== Introduction
+
+https://openldap.org/[OpenLDAP] is a free, open-source implementation of the Lightweight Directory Access Protocol (LDAP) developed by the OpenLDAP Project.
+
+https://www.rfc-editor.org/rfc/rfc4511[LDAP] stands for Lightweight Directory Access Protocol. As the name suggests, it is a lightweight protocol for accessing directory services, specifically X.500-based directory services. LDAP runs over TCP/IP or other connection oriented transfer services. 
+
+=== Server
+
+In order to simplify installation and usage, we are going to use a public https://hub.docker.com/r/bitnami/openldap/[OpenLDAP container image] published by Bitnami.
+
+To deploy OpenLDAP in a simple manner, we are going to use the command `podman-compose`. https://docs.docker.com/compose/[Compose] is a tool for defining and running multi-container applications. With Compose, you use a YAML file to configure your application's services. Then, with a single command, you create and start all the services from your configuration. 
+
+NOTE: Podman compose is included in your default podman installation.
+
+
+=== Client utilities
+
+It is strongly recommended to install https://docs.fedoraproject.org/en-US/fedora/latest/system-administrators-guide/servers/Directory_Servers/#s2-ldap-installation[`openldap-clients`], which is a package containing the command line utilities for viewing and modifying directories on an LDAP server. Amongst others, you will have `ldapsearch` to search LDAP directory entries.
+
+
+== Basic podman commands
+
+=== Run the server
+
+Run the server in detach mode, which is running the container in the background, printing the new container name.
+
+[source, bash]
+----
+podman-compose up --detach
+----
+
+=== Obtain the LDAP logs
+[source, bash]
+----
+podman logs --follow openldap
+----
+
+=== Shutdown and remove the container
+[source, bash]
+----
+podman-compose down
+----
+
+
+== Using ldapsearch to check users list
+
+[source, bash]
+----
+# List all Users
+ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword
+----
+
+
+
+== Known issues
+
+The OpenLDAP container still requires privileged permissions to execute. If not, the `ldif` file is not mounted with the correct permissions and you obtain an error like this:
+
+[source, console]
+----
+podman logs openldap
+ 15:44:02.04 INFO  ==> ** Starting LDAP setup **
+ 15:44:02.06 INFO  ==> Validating settings in LDAP_* env vars
+ 15:44:02.06 INFO  ==> Initializing OpenLDAP...
+ 15:44:02.08 INFO  ==> Creating LDAP online configuration
+ 15:44:02.09 INFO  ==> Starting OpenLDAP server in background
+ 15:44:03.11 INFO  ==> Configure LDAP credentials for admin user
+ 15:44:03.14 INFO  ==> Adding LDAP extra schemas
+ls: cannot open directory '/ldifs': Permission denied
+ 15:44:03.17 INFO  ==> Creating LDAP default tree
+ 15:44:04.24 INFO  ==> ** LDAP setup finished! **
+----
+
+
+== References
+
+
+* https://devconnected.com/how-to-search-ldap-using-ldapsearch-examples/[How To Search LDAP using ldapsearch].
+* https://github.com/wfink/infinispan.playground.security[Wolf's LDAP Playground].
+* https://github.com/bitnami/containers/blob/main/bitnami/openldap/README.md[OpenLDAP container Readme file].
