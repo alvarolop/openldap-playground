@@ -1,0 +1,9 @@
+dn: cn=normalusers,ou=groups,dc=alvaro,dc=org
+cn: normalusers
+objectclass: groupOfNames
+member: uid=user-01,ou=people,dc=alvaro,dc=org
+
+dn: cn=admins,ou=groups,dc=alvaro,dc=org
+cn: admins
+objectclass: groupOfNames
+member: uid=user-02,ou=people,dc=alvaro,dc=org

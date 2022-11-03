@@ -34,7 +34,18 @@ NOTE: Podman compose is included in your default podman installation.
 It is strongly recommended to install https://docs.fedoraproject.org/en-US/fedora/latest/system-administrators-guide/servers/Directory_Servers/#s2-ldap-installation[`openldap-clients`], which is a package containing the command line utilities for viewing and modifying directories on an LDAP server. Amongst others, you will have `ldapsearch` to search LDAP directory entries.
 
 
-== Basic podman commands
+=== Web Interface
+
+One of the downsides of OpenLDAP for beginners, compared with other LDAP solutions such as FreeIPA or MS Active Directory, is that it does not come with a default web console to configure and check users, groups, etc. For that purpose, there are many open source projects that can help us to solve that issue:
+
+* https://phpldapadmin.sourceforge.net/wiki/index.php/Main_Page[*phpLDAPadmin*]: It provides easy, anywhere-accessible, multi-language administration for your LDAP server. The problem is that its development seems stale on GitHub and might not provide the latest features or bug solutions.
+* https://github.com/dnknth/ldap-ui[*ldap-ui*]: This is a minimal interface, but it is under constant development.
+
+Therefore, we are going to try *ldap-ui*, which might be simpler and fancier.
+
+
+
+== Basic podman compose commands
 
 === Run the server
 
@@ -60,11 +71,42 @@ podman-compose down
 
 == Using ldapsearch to check users list
 
+.Using LDAP
+[source, bash]
+----
+# List all
+ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword
+
+# List all users
+ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword "objectclass=person" 
+
+# List all groups
+ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword "objectclass=groupOfNames"
+
+# List all users of the Admins group
+ldapsearch -H ldap://localhost:1389 -x -b "cn=admins,ou=groups,dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword member
+----
+////
+
+.Using LDAPS
 [source, bash]
 ----
 # List all Users
-ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword
+ldapsearch -H ldaps://localhost:1636 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword
+
+
+ldapsearch -x -D "ldap_user" -w "user_passwd" -b "cn=jdoe,dc=example,dc=local" -h ldap_host **memberof**
+
+# Request StartTLS
+ldapsearch -H ldap://localhost:10389 -Z -x -b "ou=people,dc=planetexpress,dc=com" -D "cn=admin,dc=planetexpress,dc=com" -w GoodNewsEveryone "(objectClass=inetOrgPerson)"
+
+# Enforce StartTLS
+ldapsearch -H ldap://localhost:10389 -ZZ -x -b "ou=people,dc=planetexpress,dc=com" -D "cn=admin,dc=planetexpress,dc=com" -w GoodNewsEveryone "(objectClass=inetOrgPerson)"
+
+# Enforce StartTLS with self-signed cert
+LDAPTLS_REQCERT=never ldapsearch -H ldap://localhost:10389 -ZZ -x -b "ou=people,dc=planetexpress,dc=com" -D "cn=admin,dc=planetexpress,dc=com" -w GoodNewsEveryone "(objectClass=inetOrgPerson)"
 ----
+////
 
 
 
@@ -88,9 +130,16 @@ ls: cannot open directory '/ldifs': Permission denied
 ----
 
 
+
 == References
 
 
 * https://devconnected.com/how-to-search-ldap-using-ldapsearch-examples/[How To Search LDAP using ldapsearch].
 * https://github.com/wfink/infinispan.playground.security[Wolf's LDAP Playground].
 * https://github.com/bitnami/containers/blob/main/bitnami/openldap/README.md[OpenLDAP container Readme file].
+
+
+* Red Hat Data Grid documentation: 
+** https://access.redhat.com/documentation/en-us/red_hat_data_grid/8.3/html/data_grid_security_guide/security-realms#ldap-security-realms_security-realms[LDAP Server Security Realm].
+** https://access.redhat.com/documentation/en-us/red_hat_data_grid/8.3/html-single/configuring_data_grid_caches/index#configuring-cache-authorization_security-authorization[Securing caches].
+** https://access.redhat.com/webassets/avalon/d/red-hat-data-grid/8.3/configdocs/infinispan-config-13.0.html#[Cache Security Schema].

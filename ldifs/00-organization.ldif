@@ -1,0 +1,16 @@
+dn: dc=alvaro,dc=org
+objectClass: top
+objectClass: domain
+description: This organization contains users that can be used to test configuration of other products.
+
+dn: ou=people,dc=alvaro,dc=org
+objectClass: organizationalUnit
+description: People in Alvaro's organization
+
+dn: ou=apps,dc=alvaro,dc=org
+objectClass: organizationalUnit
+description: Applications in Alvaro's organization
+
+dn: ou=groups,dc=alvaro,dc=org
+objectClass: organizationalUnit
+description: Groups in Alvaro's organization
