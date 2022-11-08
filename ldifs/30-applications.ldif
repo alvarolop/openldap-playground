@@ -1,1 +1,97 @@
-# TO DO: Fill with default applications
+dn: uid=app-01,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App One
+sn: One
+displayName: App 01
+mail: app-01@acme.org
+userPassword: app-01
+uid: app-01
+
+dn: uid=app-02,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App Two
+sn: Two
+displayName: App 02
+mail: app-02@acme.org
+userPassword: app-02
+uid: app-02
+
+dn: uid=app-03,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App Three
+sn: Three
+displayName: App 03
+mail: app-03@acme.org
+userPassword: app-03
+uid: app-03
+
+dn: uid=app-04,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App Four
+sn: Four
+displayName: App 04
+mail: app-04@acme.org
+userPassword: app-04
+uid: app-04
+
+
+# Apps related to Role 10
+dn: uid=app-11,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App Eleven
+sn: Eleven
+displayName: App 11
+mail: app-11@acme.org
+userPassword: app-11
+uid: app-11
+
+dn: uid=app-12,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App Twelve
+sn: Twelve
+displayName: App 12
+mail: app-12@acme.org
+userPassword: app-12
+uid: app-12
+
+dn: uid=app-13,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App Thirteen
+sn: Thirteen
+displayName: App 13
+mail: app-13@acme.org
+userPassword: app-13
+uid: app-13
+
+dn: uid=app-14,ou=apps,dc=acme,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: App Fourteen
+sn: Fourteen
+displayName: App 14
+mail: app-14@acme.org
+userPassword: app-14
+uid: app-14
