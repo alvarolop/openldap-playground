@@ -75,16 +75,16 @@ podman-compose down
 [source, bash]
 ----
 # List all
-ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword
+ldapsearch -H ldap://localhost:1389 -x -b "dc=acme,dc=org" -D "cn=admin,dc=acme,dc=org" -w adminpassword
 
 # List all users
-ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword "objectclass=person" 
+ldapsearch -H ldap://localhost:1389 -x -b "dc=acme,dc=org" -D "cn=admin,dc=acme,dc=org" -w adminpassword "objectclass=person" 
 
 # List all groups
-ldapsearch -H ldap://localhost:1389 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword "objectclass=groupOfNames"
+ldapsearch -H ldap://localhost:1389 -x -b "dc=acme,dc=org" -D "cn=admin,dc=acme,dc=org" -w adminpassword "objectclass=groupOfNames"
 
 # List all users of the Admins group
-ldapsearch -H ldap://localhost:1389 -x -b "cn=admins,ou=groups,dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword member
+ldapsearch -H ldap://localhost:1389 -x -b "cn=admins,ou=groups,dc=acme,dc=org" -D "cn=admin,dc=acme,dc=org" -w adminpassword member
 ----
 ////
 
@@ -92,7 +92,7 @@ ldapsearch -H ldap://localhost:1389 -x -b "cn=admins,ou=groups,dc=alvaro,dc=org"
 [source, bash]
 ----
 # List all Users
-ldapsearch -H ldaps://localhost:1636 -x -b "dc=alvaro,dc=org" -D "cn=admin,dc=alvaro,dc=org" -w adminpassword
+ldapsearch -H ldaps://localhost:1636 -x -b "dc=acme,dc=org" -D "cn=admin,dc=acme,dc=org" -w adminpassword
 
 
 ldapsearch -x -D "ldap_user" -w "user_passwd" -b "cn=jdoe,dc=example,dc=local" -h ldap_host **memberof**
@@ -143,3 +143,9 @@ ls: cannot open directory '/ldifs': Permission denied
 ** https://access.redhat.com/documentation/en-us/red_hat_data_grid/8.3/html/data_grid_security_guide/security-realms#ldap-security-realms_security-realms[LDAP Server Security Realm].
 ** https://access.redhat.com/documentation/en-us/red_hat_data_grid/8.3/html-single/configuring_data_grid_caches/index#configuring-cache-authorization_security-authorization[Securing caches].
 ** https://access.redhat.com/webassets/avalon/d/red-hat-data-grid/8.3/configdocs/infinispan-config-13.0.html#[Cache Security Schema].
+
+
+== How to deploy on OCP
+
+* https://docs.bitnami.com/tutorials/create-openldap-server-kubernetes/[Create An OpenLDAP server with Bitnami Containers on Kubernetes].
+* https://www.talkingquickly.co.uk/installing-openldap-kubernetes-helm[Installing OpenLDAP on Kubernetes with Helm].

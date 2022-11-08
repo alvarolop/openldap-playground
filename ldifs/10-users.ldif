@@ -1,4 +1,4 @@
-dn: uid=user-01,ou=people,dc=alvaro,dc=org
+dn: uid=user-01,ou=people,dc=acme,dc=org
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
@@ -6,11 +6,11 @@ objectClass: top
 cn: User One
 sn: One
 displayName: User 01
-mail: user-01@alvaro.org
+mail: user-01@acme.org
 userPassword: user-01
 uid: user-01
 
-dn: uid=user-02,ou=people,dc=alvaro,dc=org
+dn: uid=user-02,ou=people,dc=acme,dc=org
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
@@ -18,6 +18,6 @@ objectClass: top
 cn: User Two
 sn: Two
 displayName: User 02
-mail: user-02@alvaro.org
+mail: user-02@acme.org
 userPassword: user-02
 uid: user-02
