@@ -1,15 +1,15 @@
 dn: cn=role-00,ou=roles,dc=acme,dc=org
 cn: normalusers
 objectclass: groupOfNames
-member: uid=app-01,ou=apps,dc=acme,dc=org
-member: uid=app-02,ou=apps,dc=acme,dc=org
-member: uid=app-03,ou=apps,dc=acme,dc=org
-member: uid=app-04,ou=apps,dc=acme,dc=org
+member: uid=client-01,ou=clients,dc=acme,dc=org
+member: uid=client-02,ou=clients,dc=acme,dc=org
+member: uid=client-03,ou=clients,dc=acme,dc=org
+member: uid=client-04,ou=clients,dc=acme,dc=org
 
 dn: cn=role-10,ou=roles,dc=acme,dc=org
 cn: admins
 objectclass: groupOfNames
-member: uid=app-11,ou=apps,dc=acme,dc=org
-member: uid=app-12,ou=apps,dc=acme,dc=org
-member: uid=app-13,ou=apps,dc=acme,dc=org
-member: uid=app-14,ou=apps,dc=acme,dc=org
+member: uid=client-11,ou=clients,dc=acme,dc=org
+member: uid=client-12,ou=clients,dc=acme,dc=org
+member: uid=client-13,ou=clients,dc=acme,dc=org
+member: uid=client-14,ou=clients,dc=acme,dc=org
