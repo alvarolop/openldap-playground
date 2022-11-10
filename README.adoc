@@ -81,6 +81,9 @@ podman-compose down
 ----
 
 
+NOTE: Check the server config with `curl -v -u "$USER:$PASS" --digest http://localhost:11222/rest/v2/server/config`
+
+
 == Using ldapsearch to check users list
 
 .Using LDAP
