@@ -29,19 +29,29 @@ services:
       BASE_DN: "dc=acme,dc=org"
       BIND_DN: "cn=admin,dc=acme,dc=org"
       BIND_PASSWORD: adminpassword
+    depends_on:
+      - openldap
     restart: unless-stopped
 
-  # phpLDAPadmin:
-  #   image: osixia/phpldapadmin:0.9.0
-  #   container_name: phpldapadmin
-  #   # privileged: true
-  #   ports:
-  #     - 8080:80
-  #   environment:
-  #     # PHPLDAPADMIN_LDAP_HOSTS_FRIENDLY: "#PYTHON2BASH:[{'openldap': [{'server': [{'tls': False}, {'host': 'localhost'}, {'port': 1389}]}, {'login': [{'bind_id': 'cn=admin,dc=alvaro,dc=org'}, {'bind_pass': 'adminpassword'}]}]}]"
-  #     PHPLDAPADMIN_LDAP_HOSTS: openldap
-  #     # PHPLDAPADMIN_LDAP_HOSTS: "#PYTHON2BASH:[{'openldap': [{'server': [{'tls': False}, {'port': 1389}]}]}]"
-  #     PHPLDAPADMIN_HTTPS: "false"
-# volumes:
-#   openldap_data:
-#     driver: local
+  rhdg:
+    image: registry.redhat.io/datagrid/datagrid-8-rhel8:1.3
+    container_name: rhdg
+    hostname: rhdg
+    privileged: true
+    ports:
+      - 11222:11222
+    volumes:
+      - ./rhdg:/opt/infinispan/server/conf/user
+    command:
+      - '-Dinfinispan.zero-capacity-node=false'
+      - '-l'
+      - /opt/infinispan/server/conf/user/log4j.xml
+      - '-c'
+      - user/infinispan-base.xml
+      - '-c'
+      - user/infinispan-config.yaml
+      - '-c'
+      - user/infinispan-admin.xml
+    depends_on:
+      - openldap
+    restart: unless-stopped
