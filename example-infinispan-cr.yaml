@@ -1,0 +1,25 @@
+apiVersion: infinispan.org/v1
+kind: Infinispan
+metadata:
+  name: datagrid-dev
+  labels:
+    app: datagrid-dev-datagrid
+spec:
+  configListener:
+    enabled: true
+  configMapName: datagrid-dev-custom-config
+  container:
+    cpu: "2:1"
+    extraJvmOpts: "-XX:+UseG1GC -XX:MaxGCPauseMillis=400 "
+    memory: "2Gi:1Gi"
+  expose:
+    type: Route
+  replicas: 3
+  security:
+    endpointAuthentication: true
+    endpointEncryption:
+      type: None
+  service:
+    container:
+      ephemeralStorage: true
+    type: DataGrid
