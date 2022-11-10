@@ -1,0 +1,24 @@
+infinispan:
+  server:
+    security:
+      securityRealms:
+        - name: ldap-realm
+          ldapRealm:
+            url: 'ldap://openldap:1389'
+            principal: 'cn=admin,dc=acme,dc=org'
+            credential: adminpassword
+            connectionTimeout: '3000'
+            readTimeout: '30000'
+            connectionPooling: true
+            referralMode: ignore
+            pageSize: '30'
+            directVerification: true
+            identityMapping:
+              rdnIdentifier: uid
+              searchDn: 'ou=clients,dc=acme,dc=org'
+              searchRecursive: false
+              attributeMapping:
+                - filter: '(&(objectClass=groupOfNames)(member={1}))'
+                  filterDn: 'ou=roles,dc=acme,dc=org'
+                  from: cn
+                  to: Roles
