@@ -84,7 +84,7 @@ podman-compose down
 NOTE: Check the server config with `curl -v -u "$USER:$PASS" --digest http://localhost:11222/rest/v2/server/config`
 
 
-== Using ldapsearch to check users list
+== Using `ldapsearch` to check the users list
 
 .Using LDAP
 [source, bash]
@@ -123,6 +123,19 @@ LDAPTLS_REQCERT=never ldapsearch -H ldap://localhost:10389 -ZZ -x -b "ou=people,
 ----
 ////
 
+
+== Apache Directory Studio
+
+For most of you, LDAP and LDIF files are something new and you would appreciate having an IDE to modify these files. Apache Directory Studio is a complete directory tooling platform intended to be used with any LDAP server however it is particularly designed for use with ApacheDS.
+
+NOTE: This should not be confused with ApacheDS, which is an extensible and embeddable directory server entirely written in Java. While Apache Directory Studio is "the web interface" for LDAP servers.
+
+Download the RPM from this https://directory.apache.org/studio/download/download-linux.html[website]. Untar the downloaded file and execute the ApacheDirectoryStudio file.
+
+Now, you have a graphical interface to design your LDAP structure and export it as LDIF files.
+
+.Apache Studio main view
+image::apache-directory-studio.png["Apache Studio main view"]
 
 
 == Known issues
