@@ -30,7 +30,7 @@ toc::[]
 
 https://openldap.org/[OpenLDAP] is a free, open-source implementation of the Lightweight Directory Access Protocol (LDAP) developed by the OpenLDAP Project.
 
-https://www.rfc-editor.org/rfc/rfc4511[LDAP] stands for Lightweight Directory Access Protocol. As the name suggests, it is a lightweight protocol for accessing directory services, specifically X.500-based directory services. LDAP runs over TCP/IP or other connection oriented transfer services. 
+https://www.rfc-editor.org/rfc/rfc4511[LDAP] stands for Lightweight Directory Access Protocol. As the name suggests, it is a lightweight protocol for accessing directory services, specifically X.500-based directory services. LDAP runs over TCP/IP or other connection-oriented transfer services. 
 
 === Server
 
@@ -48,7 +48,7 @@ It is strongly recommended to install https://docs.fedoraproject.org/en-US/fedor
 
 === Web Interface
 
-One of the downsides of OpenLDAP for beginners, compared with other LDAP solutions such as FreeIPA or MS Active Directory, is that it does not come with a default web console to configure and check users, groups, etc. For that purpose, there are many open source projects that can help us to solve that issue:
+One of the downsides of OpenLDAP for beginners, compared with other LDAP solutions such as FreeIPA or MS Active Directory, is that it does not come with a default web console to configure and check users, groups, etc. For that purpose, many open-source projects can help us to solve that issue:
 
 * https://phpldapadmin.sourceforge.net/wiki/index.php/Main_Page[*phpLDAPadmin*]: It provides easy, anywhere-accessible, multi-language administration for your LDAP server. The problem is that its development seems stale on GitHub and might not provide the latest features or bug solutions.
 * https://github.com/dnknth/ldap-ui[*ldap-ui*]: This is a minimal interface, but it is under constant development.
@@ -61,7 +61,7 @@ Therefore, we are going to try *ldap-ui*, which might be simpler and fancier.
 
 === Run the server
 
-Run the server in detach mode, which is running the container in the background, printing the new container name.
+Run the server in detached mode, which is running the container in the background, printing the new container name.
 
 [source, bash]
 ----
@@ -84,7 +84,60 @@ podman-compose down
 NOTE: Check the server config with `curl -v -u "$USER:$PASS" --digest http://localhost:11222/rest/v2/server/config`
 
 
-== Using `ldapsearch` to check the users list
+== LDAP organization structure
+
+This section tries to explain the pre-configured organization of the LDIF files present in this repository. The main organization is `dc=acme,dc=org` and all the configuration hands from that node. Then, the hierarchy splits in two:
+
+* There is a tree related to people - real users - and their belonging to groups. 
+* There is a tree related to client applications - functional users - and their belonging to groups. 
+
+.Users tree
+[source, console]
+----
+dn: dc=acme,dc=org
+
+dn: ou=people,dc=acme,dc=org
+    dn: uid=user-01,ou=people,dc=acme,dc=org
+    dn: uid=user-02,ou=people,dc=acme,dc=org
+
+dn: ou=groups,dc=acme,dc=org
+    dn: cn=developers,ou=groups,dc=acme,dc=org
+        member: uid=user-01,ou=people,dc=acme,dc=org
+    dn: cn=admins,ou=groups,dc=acme,dc=org
+        member: uid=user-02,ou=people,dc=acme,dc=org
+----
+
+.Client applications tree
+[source, console]
+----
+dn: dc=acme,dc=org
+
+dn: ou=clients,dc=acme,dc=org
+    dn: uid=client-01,ou=clients,dc=acme,dc=org
+    dn: uid=client-02,ou=clients,dc=acme,dc=org
+    dn: uid=client-03,ou=clients,dc=acme,dc=org
+    dn: uid=client-04,ou=clients,dc=acme,dc=org
+    dn: uid=client-11,ou=clients,dc=acme,dc=org
+    dn: uid=client-12,ou=clients,dc=acme,dc=org
+    dn: uid=client-13,ou=clients,dc=acme,dc=org
+    dn: uid=client-14,ou=clients,dc=acme,dc=org
+
+dn: ou=roles,dc=acme,dc=org
+    dn: cn=role-00,ou=roles,dc=acme,dc=org
+        member: uid=client-01,ou=clients,dc=acme,dc=org
+        member: uid=client-02,ou=clients,dc=acme,dc=org
+        member: uid=client-03,ou=clients,dc=acme,dc=org
+        member: uid=client-04,ou=clients,dc=acme,dc=org
+
+    dn: cn=role-10,ou=roles,dc=acme,dc=org
+        member: uid=client-11,ou=clients,dc=acme,dc=org
+        member: uid=client-12,ou=clients,dc=acme,dc=org
+        member: uid=client-13,ou=clients,dc=acme,dc=org
+        member: uid=client-14,ou=clients,dc=acme,dc=org
+----
+
+
+== Using `ldapsearch` to check the list of users
 
 .Using LDAP
 [source, bash]
