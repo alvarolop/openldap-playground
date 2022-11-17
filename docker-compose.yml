@@ -46,6 +46,8 @@ services:
       - '-Dinfinispan.zero-capacity-node=false'
       - '-l'
       - /opt/infinispan/server/conf/user/log4j.xml
+      # - '-c'
+      # - user/infinispan-podman.xml
       - '-c'
       - user/infinispan-base.xml
       - '-c'
