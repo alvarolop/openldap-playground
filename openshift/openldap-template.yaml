@@ -1,0 +1,355 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: openldap-template
+  annotations:
+    description: "Description"
+    tags: "openldap"
+labels:
+  template: "openldap-template" 
+  app: "${APP_NAME}"
+
+objects:
+
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    name: ${NAMESPACE}
+    annotations:
+      openshift.io/display-name: "OpenLDAP"
+
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: openldap-configuration
+    namespace: ${NAMESPACE}
+  data:
+    00-organization.ldif: |
+      dn: dc=acme,dc=org
+      objectClass: top
+      objectClass: domain
+      description: This organization contains users that can be used to test configuration of other products.
+
+      dn: ou=people,dc=acme,dc=org
+      objectClass: organizationalUnit
+      description: People in Acme's organization
+
+      dn: ou=groups,dc=acme,dc=org
+      objectClass: organizationalUnit
+      description: Groups in Acme's organization to group people
+
+      dn: ou=clients,dc=acme,dc=org
+      objectClass: organizationalUnit
+      description: Clients in Acme's organization
+
+      dn: ou=roles,dc=acme,dc=org
+      objectClass: organizationalUnit
+      description: Roles in Acme's organization to group clients
+    10-users.ldif: |
+      dn: uid=user-01,ou=people,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: User One
+      sn: One
+      displayName: User 01
+      mail: user-01@acme.org
+      userPassword: user-01
+      uid: user-01
+
+      dn: uid=user-02,ou=people,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: User Two
+      sn: Two
+      displayName: User 02
+      mail: user-02@acme.org
+      userPassword: user-02
+      uid: user-02
+    20-groups.ldif: |
+      dn: cn=normalusers,ou=groups,dc=acme,dc=org
+      cn: normalusers
+      objectclass: groupOfNames
+      member: uid=user-01,ou=people,dc=acme,dc=org
+
+      dn: cn=admins,ou=groups,dc=acme,dc=org
+      cn: admins
+      objectclass: groupOfNames
+      member: uid=user-02,ou=people,dc=acme,dc=org
+    30-clients.ldif: |
+      dn: uid=client-01,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client One
+      sn: One
+      displayName: Client 01
+      mail: client-01@acme.org
+      userPassword: client-01
+      uid: client-01
+
+      dn: uid=client-02,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client Two
+      sn: Two
+      displayName: Client 02
+      mail: client-02@acme.org
+      userPassword: client-02
+      uid: client-02
+
+      dn: uid=client-03,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client Three
+      sn: Three
+      displayName: Client 03
+      mail: client-03@acme.org
+      userPassword: client-03
+      uid: client-03
+
+      dn: uid=client-04,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client Four
+      sn: Four
+      displayName: Client 04
+      mail: client-04@acme.org
+      userPassword: client-04
+      uid: client-04
+
+
+      # Clients related to Role 10
+      dn: uid=client-11,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client Eleven
+      sn: Eleven
+      displayName: Client 11
+      mail: client-11@acme.org
+      userPassword: client-11
+      uid: client-11
+
+      dn: uid=client-12,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client Twelve
+      sn: Twelve
+      displayName: Client 12
+      mail: client-12@acme.org
+      userPassword: client-12
+      uid: client-12
+
+      dn: uid=client-13,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client Thirteen
+      sn: Thirteen
+      displayName: Client 13
+      mail: client-13@acme.org
+      userPassword: client-13
+      uid: client-13
+
+      dn: uid=client-14,ou=clients,dc=acme,dc=org
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: person
+      objectClass: top
+      cn: Client Fourteen
+      sn: Fourteen
+      displayName: Client 14
+      mail: client-14@acme.org
+      userPassword: client-14
+      uid: client-14
+    40-roles.ldif: |
+      dn: cn=role-00,ou=roles,dc=acme,dc=org
+      cn: normalusers
+      objectclass: groupOfNames
+      member: uid=client-01,ou=clients,dc=acme,dc=org
+      member: uid=client-02,ou=clients,dc=acme,dc=org
+      member: uid=client-03,ou=clients,dc=acme,dc=org
+      member: uid=client-04,ou=clients,dc=acme,dc=org
+
+      dn: cn=role-10,ou=roles,dc=acme,dc=org
+      cn: admins
+      objectclass: groupOfNames
+      member: uid=client-11,ou=clients,dc=acme,dc=org
+      member: uid=client-12,ou=clients,dc=acme,dc=org
+      member: uid=client-13,ou=clients,dc=acme,dc=org
+      member: uid=client-14,ou=clients,dc=acme,dc=org
+
+
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    labels:
+      template: openldap-ephemeral
+    name: ${APP_NAME}
+    namespace: ${NAMESPACE}
+  spec:
+    podManagementPolicy: OrderedReady
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: ${APP_NAME}
+    serviceName: ""
+    template:
+      metadata:
+        labels:
+          app: ${APP_NAME}
+      spec:
+        containers:
+        - image: docker.io/bitnami/openldap:2.6.3
+          name: openldap
+          ports:
+          - containerPort: 1389
+            protocol: TCP
+          - containerPort: 1636
+            protocol: TCP
+          env:
+          - name: LDAP_ROOT
+            value: dc=acme,dc=org
+          - name: LDAP_ADMIN_USERNAME
+            value: admin
+          - name: LDAP_ADMIN_PASSWORD
+            value: adminpassword
+          - name: LDAP_ALLOW_ANON_BINDING
+            value: "no"
+          - name: LDAP_CUSTOM_LDIF_DIR
+            value: /ldifs
+          volumeMounts:
+          - mountPath: /ldifs
+            name: config-volume
+
+        # - image: dnknth/ldap-ui
+        #   name: ldap-ui
+        #   ports:
+        #   - containerPort: 5000
+        #     protocol: TCP
+        #   env:
+        #   - name: LDAP_URL
+        #     value: "ldap://openldap:1389"
+        #     # value: "ldap://openldap-service"
+        #   - name: BASE_DN
+        #     value: "dc=acme,dc=org"
+        #   - name: BIND_DN
+        #     value: "cn=admin,dc=acme,dc=org"
+        #   - name: BIND_PASSWORD
+        #     value: adminpassword
+
+        volumes:
+          - name: config-volume
+            configMap:
+              defaultMode: 420
+              name: openldap-configuration
+
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    labels:
+      template: openldap-ephemeral
+    name: ldap-ui
+    namespace: ${NAMESPACE}
+  spec:
+    podManagementPolicy: OrderedReady
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: ${APP_NAME}
+    serviceName: ""
+    template:
+      metadata:
+        labels:
+          app: ${APP_NAME}
+      spec:
+        containers:
+        - image: dnknth/ldap-ui
+          name: ldap-ui
+          ports:
+          - containerPort: 5000
+            protocol: TCP
+          env:
+          - name: LDAP_URL
+            # value: "ldap://openldap:1389"
+            value: "ldap://openldap-service:1389"
+          - name: BASE_DN
+            value: "dc=acme,dc=org"
+          - name: BIND_DN
+            value: "cn=admin,dc=acme,dc=org"
+          - name: BIND_PASSWORD
+            value: adminpassword
+
+     
+
+      
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${APP_NAME}-service
+    namespace: ${NAMESPACE}
+  spec:
+    ports:
+    - name: ldap
+      port: 1389
+      protocol: TCP
+      targetPort: 1389
+    selector:
+      app: ${APP_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ldap-ui-service
+    namespace: ${NAMESPACE}
+  spec:
+    ports:
+    - name: ldap
+      port: 5000
+      protocol: TCP
+      targetPort: 5000
+    selector:
+      app: ${APP_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    name: ldap-ui-route
+    namespace: ${NAMESPACE}
+  spec:
+    to:
+      kind: Service
+      name: ldap-ui-service
+      weight: 100
+    wildcardPolicy: None
+
+
+
+parameters:
+- name: APP_NAME
+  required: false
+  value: "openldap"
+- name: NAMESPACE
+  required: true
+  value: "openldap"

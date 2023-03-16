@@ -23,7 +23,7 @@ services:
     ports:
       - 5000:5000
     links:
-      - ldap
+      - openldap
     environment:
       LDAP_URL: "ldap://openldap:1389"
       BASE_DN: "dc=acme,dc=org"
@@ -34,7 +34,8 @@ services:
     restart: unless-stopped
 
   rhdg:
-    image: registry.redhat.io/datagrid/datagrid-8-rhel8:1.3
+    # image: registry.redhat.io/datagrid/datagrid-8-rhel8:1.3
+    image: registry.redhat.io/datagrid/datagrid-8-rhel8:1.4-8.4.1.GA.1
     container_name: rhdg
     hostname: rhdg
     privileged: true
@@ -46,12 +47,16 @@ services:
       - '-Dinfinispan.zero-capacity-node=false'
       - '-l'
       - /opt/infinispan/server/conf/user/log4j.xml
+      # - '-c'
+      # - user/infinispan-base.xml
+      # - '-c'
+      # - user/infinispan-config.yaml
+      # - '-c'
+      # - user/infinispan-admin.xml
+      # - '-c'
+      # - user/infinispan-custom.xml
       - '-c'
-      - user/infinispan-base.xml
-      - '-c'
-      - user/infinispan-config.yaml
-      - '-c'
-      - user/infinispan-admin.xml
+      - user/infinispan-custom.yml
     depends_on:
       - openldap
     restart: unless-stopped

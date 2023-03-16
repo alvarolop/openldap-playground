@@ -22,3 +22,12 @@ infinispan:
                   filterDn: 'ou=roles,dc=acme,dc=org'
                   from: cn
                   to: Roles
+
+    endpoints:
+      - socketBinding: default
+        securityRealm: ldap-realm
+        hotrodConnector:
+          authentication:
+            sasl:
+              qop: auth
+              serverName: infinispan
