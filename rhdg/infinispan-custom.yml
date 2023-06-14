@@ -56,7 +56,7 @@ infinispan:
             sasl:
               qop: auth
               server-name: infinispan
-              mechanisms: BASIC DIGEST PLAIN
+              mechanisms: BASIC DIGEST PLAIN DIGEST-MD5
         rest-connector:
           authentication:
             mechanisms: DIGEST BASIC
