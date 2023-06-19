@@ -54,8 +54,15 @@ services:
       # - user/infinispan-admin.xml
       # - '-c'
       # - user/infinispan-custom.xml
+      # - '-c'
+      # - user/infinispan-custom.yml
       - '-c'
-      - user/infinispan-custom.yml
+      - user/infinispan-custom-security.yml
+      - '-c'
+      - user/infinispan-custom-caches.yml
+      # - '-c'
+      # - user/infinispan-custom-caches.xml
+      
     depends_on:
       - openldap
     restart: unless-stopped

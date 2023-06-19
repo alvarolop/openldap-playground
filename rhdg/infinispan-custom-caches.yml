@@ -1,0 +1,22 @@
+infinispan:
+  cache-container:
+    name: default
+    statistics: true
+    transport:
+      cluster: "${infinispan.cluster.name:cluster}"
+      stack: "${infinispan.cluster.stack:tcp}"
+      node-name: "${infinispan.node.name:}"
+    
+    caches:
+      bookCache:
+        distributedCache:
+          mode: SYNC
+          statistics: true
+          encoding:
+            media-type: application/x-java-serialized-object
+      bookCacheProto:
+        distributedCache:
+          mode: SYNC
+          statistics: true
+          encoding:
+            media-type: application/x-protostream

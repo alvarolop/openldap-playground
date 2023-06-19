@@ -1,0 +1,22 @@
+<infinispan
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:infinispan:config:14.0 https://infinispan.org/schemas/infinispan-config-14.0.xsd
+                       urn:infinispan:server:14.0 https://infinispan.org/schemas/infinispan-server-14.0.xsd"
+   xmlns="urn:infinispan:config:14.0"
+   xmlns:server="urn:infinispan:server:14.0">
+
+   <cache-container name="default" statistics="true">
+      <transport cluster="${infinispan.cluster.name:cluster}"
+         stack="${infinispan.cluster.stack:tcp}" node-name="${infinispan.node.name:}" />
+
+      <distributed-cache name="bookCache" mode="SYNC" statistics="true">
+         <encoding media-type="application/x-jboss-marshalling" />
+      </distributed-cache>
+
+      <distributed-cache name="bookCacheProto" mode="SYNC" statistics="true">
+         <encoding media-type="application/x-protostream" />
+      </distributed-cache>
+
+   </cache-container>
+
+</infinispan>

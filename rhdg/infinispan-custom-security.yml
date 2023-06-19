@@ -1,37 +1,17 @@
 infinispan:
-  cache-container:
-    name: default
-    statistics: true
-    transport:
-      cluster: "${infinispan.cluster.name:cluster}"
-      stack: "${infinispan.cluster.stack:tcp}"
-      node-name: "${infinispan.node.name:}"
-    caches:
-      bookCache:
-        distributedCache:
-          mode: SYNC
-          statistics: true
-          encoding:
-            media-type: application/x-java-serialized-object
-      bookCacheProto:
-        distributedCache:
-          mode: SYNC
-          statistics: true
-          encoding:
-            media-type: application/x-protostream
   server:
     interfaces:
       interface:
          name: public
          inet-address:
             value: "${infinispan.bind.address:127.0.0.1}"
-
     socket-bindings:
       default-interface: public
       port-offset: "${infinispan.socket.binding.port-offset:0}"
       socket-binding:
          name: default
          port: "${infinispan.bind.port:11222}"
+
     security:
       security-realms:
         security-realm:
@@ -43,17 +23,16 @@ infinispan:
             credential: adminpassword
             direct-verification: true
             identity-mapping:
-              rdn-identifier: uid
-              search-dn: "ou=clients,dc=acme,dc=org"
-              user-password-mapper:
+              rdnIdentifier: uid
+              searchDn: "ou=clients,dc=acme,dc=org"
+              userPasswordMapper:
                 from: userPassword
                 verifiable: false
-              attribute-mapping:
-                attribute:
-                  from: cn
+              attributeMapping:
+                - from: cn
                   to: Roles
                   filter: "(&(objectClass=groupOfNames)(member={1}))"
-                  filter-dn: "ou=roles,dc=acme,dc=org"
+                  filterDn: "ou=roles,dc=acme,dc=org"
     endpoints:
       endpoint:
         socket-binding: default
