@@ -1,0 +1,281 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openldap
+  labels:
+    app.kubernetes.io/name: openldap
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openldap
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openldap
+    spec:
+      serviceAccountName: openldap
+      containers:
+        - name: openldap
+          image: docker.io/bitnami/openldap:latest
+          imagePullPolicy: "Always"
+          env:
+            - name: LDAP_ADMIN_USERNAME
+              value: "admin"
+            - name: LDAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: adminpassword
+                  name: openldap
+            # - name: LDAP_USERS
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: users
+            #       name: openldap
+            # - name: LDAP_PASSWORDS
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: passwords
+            #       name: openldap
+            - name: LDAP_CUSTOM_LDIF_DIR
+              value: /tmp/ldif
+          ports:
+            - name: tcp-ldap
+              containerPort: 1389
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openldap
+  labels:
+    app.kubernetes.io/name: openldap
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp-ldap
+      port: 1389
+      targetPort: tcp-ldap
+  selector:
+    app.kubernetes.io/name: openldap
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openldap
+type: Opaque
+stringData:
+  adminpassword: adminpassword
+  users: user01,user02
+  passwords: password01,password02
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openldap
+---
+# Role for openldap-sa
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: allow-anyuid-scc
+rules:
+  - verbs:
+      - use
+    apiGroups:
+      - security.openshift.io
+    resources:
+      - securitycontextconstraints
+    resourceNames:
+      - anyuid
+---
+# Rolebinding for openldap-sa, check the sa namespace
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: anyuid-scc
+subjects:
+  - kind: ServiceAccount
+    name: openldap-sa
+    namespace: openldap
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: allow-anyuid-scc
+
+---
+# ConfigMap with all ldifs
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: openldap-config
+data:
+  ldif00.ldif: |
+    dn: dc=acme,dc=org
+    objectClass: top
+    objectClass: domain
+    description: This organization contains users that can be used to test configuration of other products.
+
+    dn: ou=people,dc=acme,dc=org
+    objectClass: organizationalUnit
+    description: People in Acme's organization
+
+    dn: ou=groups,dc=acme,dc=org
+    objectClass: organizationalUnit
+    description: Groups in Acme's organization to group people
+
+    dn: ou=clients,dc=acme,dc=org
+    objectClass: organizationalUnit
+    description: Clients in Acme's organization
+
+    dn: ou=roles,dc=acme,dc=org
+    objectClass: organizationalUnit
+    description: Roles in Acme's organization to group clients  
+  ldif10.ldif: |
+    dn: uid=user-01,ou=people,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: User One
+    sn: One
+    displayName: User 01
+    mail: user-01@acme.org
+    userPassword: user-01
+    uid: user-01
+
+    dn: uid=user-02,ou=people,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: User Two
+    sn: Two
+    displayName: User 02
+    mail: user-02@acme.org
+    userPassword: user-02
+    uid: user-02
+  ldif20.ldif: |
+    dn: cn=developers,ou=groups,dc=acme,dc=org
+    cn: developers
+    objectclass: groupOfNames
+    member: uid=user-01,ou=people,dc=acme,dc=org
+
+    dn: cn=admins,ou=groups,dc=acme,dc=org
+    cn: admins
+    objectclass: groupOfNames
+    member: uid=user-02,ou=people,dc=acme,dc=org
+  ldif30.ldif: |
+    dn: uid=client-01,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client One
+    sn: One
+    displayName: Client 01
+    mail: client-01@acme.org
+    userPassword: client-01
+    uid: client-01
+
+    dn: uid=client-02,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client Two
+    sn: Two
+    displayName: Client 02
+    mail: client-02@acme.org
+    userPassword: client-02
+    uid: client-02
+
+    dn: uid=client-03,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client Three
+    sn: Three
+    displayName: Client 03
+    mail: client-03@acme.org
+    userPassword: client-03
+    uid: client-03
+
+    dn: uid=client-04,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client Four
+    sn: Four
+    displayName: Client 04
+    mail: client-04@acme.org
+    userPassword: client-04
+    uid: client-04
+
+
+    # Clients related to Role 10
+    dn: uid=client-11,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client Eleven
+    sn: Eleven
+    displayName: Client 11
+    mail: client-11@acme.org
+    userPassword: client-11
+    uid: client-11
+
+    dn: uid=client-12,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client Twelve
+    sn: Twelve
+    displayName: Client 12
+    mail: client-12@acme.org
+    userPassword: client-12
+    uid: client-12
+
+    dn: uid=client-13,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client Thirteen
+    sn: Thirteen
+    displayName: Client 13
+    mail: client-13@acme.org
+    userPassword: client-13
+    uid: client-13
+
+    dn: uid=client-14,ou=clients,dc=acme,dc=org
+    objectClass: inetOrgPerson
+    objectClass: organizationalPerson
+    objectClass: person
+    objectClass: top
+    cn: Client Fourteen
+    sn: Fourteen
+    displayName: Client 14
+    mail: client-14@acme.org
+    userPassword: client-14
+    uid: client-14
+  ldif40.ldif: |
+    dn: cn=role-00,ou=roles,dc=acme,dc=org
+    cn: normalusers
+    objectclass: groupOfNames
+    member: uid=client-01,ou=clients,dc=acme,dc=org
+    member: uid=client-02,ou=clients,dc=acme,dc=org
+    member: uid=client-03,ou=clients,dc=acme,dc=org
+    member: uid=client-04,ou=clients,dc=acme,dc=org
+
+    dn: cn=role-10,ou=roles,dc=acme,dc=org
+    cn: admins
+    objectclass: groupOfNames
+    member: uid=client-11,ou=clients,dc=acme,dc=org
+    member: uid=client-12,ou=clients,dc=acme,dc=org
+    member: uid=client-13,ou=clients,dc=acme,dc=org
+    member: uid=client-14,ou=clients,dc=acme,dc=org
